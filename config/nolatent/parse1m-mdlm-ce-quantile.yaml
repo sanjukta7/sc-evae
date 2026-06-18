@@ -1,0 +1,44 @@
+run_name: nips-parse1m-mdlm-nolatent-ce-quantile_seed420
+seed: 420
+work_dir: outputs/experiments-final
+n_iters: 75000
+learning_rate: 2.0e-4
+warmup_steps: 3000
+grad_clip: 1.0
+log_freq: 100
+eval_freq: 5000
+save_freq: 5000
+lr_schedule: cosine
+max_val_iters: 500
+
+dataset:
+  h5ad_path: datasets/parse_10m_cytokine/parse1m_donor1_scldm2k.h5ad
+  load_lazily: false
+  batch_size: 96
+  num_workers: 0
+  ctrl_label: PBS
+  donor_col: donor
+  apply_normalize: false
+  apply_log1p: false
+  use_binning: quantile
+  split_path: assets/scldm_parse1m_test.json
+
+model:
+  type: masked_diffusion
+  time_epsilon: 1.0e-3
+  time_conditioned: true
+  num_sample_steps: 128
+  pert_cond_source: learned
+  do_celltype_cond: true
+  transformer:
+    type: dit
+    d_model: 384
+    nhead: 8
+    num_layers: 6
+    dim_feedforward: 1536
+  output_head:
+    type: cross_entropy
+
+wandb:
+  enabled: true
+  project: sc_evae

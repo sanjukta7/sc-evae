@@ -1,0 +1,74 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sc_evae"
+version = "0.1.0"
+description = "sc_evae: discrete-latent single-cell perturbation modeling"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+license = {file = "LICENSE"}
+dependencies = [
+    "accelerate>=1.2.1",
+    "anndata>=0.11.4",
+    "draccus>=0.3.0",
+    "einops>=0.8.0",
+    "matplotlib>=3.8",
+    "mygene>=3.2.2",
+    "numpy>=2.2.6",
+    "pandas>=2.2.3",
+    "pot>=0.9.5",
+    "pyyaml>=6.0.2",
+    "scanpy>=1.11.2",
+    "scikit-learn>=1.6.1",
+    "scipy>=1.15.0",
+    "torch>=2.7.0,<2.12.0",
+    "tqdm>=4.67.1",
+    "vector-quantize-pytorch>=1.28.1",
+    "wandb>=0.19.11",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "black>=23.0",
+    "flake8>=6.0",
+]
+
+# ---------------------------------------------------------------------------
+# uv: redirect torch to the PyTorch CUDA wheel index on Linux.
+# - x86_64 → cu128. RTX 5090 (sm_120, Blackwell) requires CUDA 12.8+ runtime;
+#   PyPI's default torch 2.11.0 wheel ships cu130, which needs driver 580+.
+#   Most RunPod hosts run drivers 555-579 (CUDA 12.8/12.9) and would silently
+#   fall back to CPU on a cu130 install — see bootstrap_train.sh CUDA guard.
+# - aarch64 → cu126. PyPI hosts CPU-only aarch64 wheels; no Blackwell on ARM,
+#   so cu126 is sufficient.
+# On macOS / Windows the default PyPI resolution is unchanged.
+# ---------------------------------------------------------------------------
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cu128", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+  { index = "pytorch-cu126", marker = "platform_machine == 'aarch64' and sys_platform == 'linux'" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.black]
+# Pin the target to the dev interpreter (.python-version = 3.12). Without this,
+# Black infers py311/py312/py313 from requires-python and warns it can't run its
+# AST safety check when invoked under 3.12 ("cannot parse code formatted for
+# Python 3.13"). Formatting is identical; pinning just silences that warning.
+target-version = ["py312"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::UserWarning"]

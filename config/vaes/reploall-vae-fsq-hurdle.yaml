@@ -1,0 +1,43 @@
+run_name: nips-reploall-vae-fsq-hurdle_seed401
+seed: 401
+work_dir: outputs/experiments-final
+n_iters: 75000
+learning_rate: 6.0e-4
+warmup_steps: 2500
+log_freq: 100
+eval_freq: 5000
+save_freq: 5000
+lr_schedule: cosine
+
+dataset:
+  # scLDM-faithful Replogle-Nadig: all 4 cell lines × scLDM's 2k gene panel.
+  # normalize_total(median) + log1p baked in offline; loader uses
+  # adata.layers["log1p"] when apply_log1p=true (precomputed_log1p_layer
+  # registered in DATASET_METADATA).
+  h5ad_path: datasets/replogle/replogle_combined_scldm2k.h5ad
+  ctrl_label: non-targeting
+  load_lazily: false
+  batch_size: 128
+  num_workers: 0
+  # scLDM HepG2 holdout (cell_type='hepg2' × 372 perts) — published-paper
+  # test slice used as val so val metrics reflect real generalization.
+  split_path: assets/scldm_replogle_test.json
+
+model:
+  type: vae
+  num_latent_tokens: 64
+  encoder:
+    type: cross_attention
+  decoder:
+    type: cross_attention
+  quantizer:
+    type: fsq
+    codebook_size: 512
+  input_head:
+    type: mlp
+  output_head:
+    type: hurdle
+
+wandb:
+  enabled: true
+  project: sc_evae
