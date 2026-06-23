@@ -1,0 +1,32 @@
+{
+    "cell_type": ["CD4 Naive"],
+    "pert": [
+        "4-1BBL",
+        "CT-1",
+        "FLT3L",
+        "IFN-epsilon",
+        "IL-1-beta",
+        "IL-2",
+        "IL-4",
+        "IL-7",
+        "IL-9",
+        "IL-10",
+        "IL-11",
+        "IL-13",
+        "IL-15",
+        "IL-16",
+        "IL-17D",
+        "IL-17E",
+        "IL-17F",
+        "IL-19",
+        "IL-27",
+        "IL-31",
+        "IL-32-beta",
+        "IL-34",
+        "LT-alpha1-beta2",
+        "OSM",
+        "PRL",
+        "RANKL",
+        "TWEAK"
+    ]
+}
