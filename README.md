@@ -2,40 +2,32 @@
 
 Sanjukta Bhattacharya, Christian Gensbigler, Shaamil Karim, Jon Lees
 
-[![Paper](https://img.shields.io/badge/Paper-Coming_Soon-blue?style=for-the-badge)](#citation)
-[![bioRxiv](https://img.shields.io/badge/bioRxiv-2026.06.15.732063-b31b1b.svg?style=for-the-badge)](https://www.biorxiv.org/content/10.64898/2026.06.15.732063v1.abstract)
-[![PDF](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](#citation)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.5-EE4C2C.svg?style=for-the-badge&logo=pytorch)](https://pytorch.org/get-started/locally/)
-[![Python](https://img.shields.io/badge/python-3.10+-blue?style=for-the-badge)](https://www.python.org)
-[![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
+[Paper](#citation)
+[bioRxiv](https://www.biorxiv.org/content/10.64898/2026.06.15.732063v1.abstract)
+[PDF](#citation)
+[PyTorch](https://pytorch.org/get-started/locally/)
+[Python](https://www.python.org)
+[License](LICENSE)
 
-[**Installation**](#installation) | [**Dataset Download**](#dataset-download) | [**Training**](#training) | [**Evaluation**](#evaluation) | [**Citation**](#citation)
+**[Installation](#installation)** | **[Dataset Download](#dataset-download)** | **[Training](#training)** | **[Evaluation](#evaluation)** | **[Citation](#citation)**
 
-<hr style="border: 2px solid gray;"></hr>
+---
 
 `ExpressionVAE` is a vector-quantized (FSQ) variational autoencoder that encodes
-each cell's gene-expression profile as a fixed-length sequence of discrete codes,
-paired with a perturbation-conditioned generative prior over those codes
-(autoregressive, masked discrete diffusion, or flow matching). On Replogle and
-Parse 1M it reaches state-of-the-art on the distributional and cell-eval
-perturbation metrics, and its frozen encoder transfers to an out-of-distribution
-CRISPRi reversion benchmark (TeloHAEC).
+each cell's gene-expression profile as a fixed-length sequence of discrete codes, paired with a perturbation-conditioned generative prior over those codes (autoregressive, masked discrete diffusion, or flow matching). On both Replogle and Parse 1M datasets it reaches state-of-the-art on the distributional and mean based perturbation metrics. The frozen encoder transfers to an un-seen CRISPRi reversion benchmark introduced in the TeloHAEC dataset.
 
-This repository contains everything needed to reproduce the paper's two datasets
-(Replogle, Parse 1M), the TeloHAEC evaluation, and the reported metrics.
+This repository contains everything needed to reproduce the paper's two datasets (Replogle, Parse 1M), the TeloHAEC evaluation, and the reported metrics.
 
 ## Installation
 
-Dependencies are managed with [`uv`](https://docs.astral.sh/uv/).
+Dependencies are managed with `[uv](https://docs.astral.sh/uv/)`.
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 git clone <this-repo-url> sc_evae
 cd sc_evae
 uv sync                 # runtime deps
-uv sync --extra dev     # + pytest / black / flake8
 ```
-
 
 The scLDM train/holdout split definitions (Replogle HepG2 = 372 perts; Parse
 CD4-Naive = 27 cytokines) are JSON specs in `assets/` —
@@ -46,7 +38,7 @@ cell-type × perturbation holdout (no code change).
 
 ## Training
 
-Training is two-stage.
+Training is two-stage here. 
 
 **Stage 1 — train the `ExpressionVAE`** (Replogle example):
 
@@ -92,7 +84,7 @@ This computes three metric families, written to
 
 - `distribution` — W₂, MMD², Fréchet distance (`metrics/distribution.py`)
 - `cell_eval`    — disc_l1, PR-AUC, Spearman-sig/LFC, overlap@N, Pearson-Δ
-  (`metrics/state_metrics.py`) — **the paper's reported per-perturbation suite**
+(`metrics/state_metrics.py`) — **the paper's reported per-perturbation suite**
 
 **TeloHAEC reversion benchmark** (frozen encoder):
 
@@ -131,8 +123,20 @@ for details.
 
 ## Acknowledgements
 
-This repository builds heavily off of [STATE](https://github.com/ArcInstitute/state),
+This repository builds heavily off of [DCM](https://github.com/sanjukta7/aivc-dcm), [STATE](https://github.com/ArcInstitute/state),
 [scLDM](https://github.com/czi-ai/scLDM), [DiT](https://github.com/facebookresearch/DiT),
 and [Score-Entropy Discrete Diffusion](https://github.com/louaaron/Score-Entropy-Discrete-Diffusion).
-We also used the [cell-load](https://github.com/ArcInstitute/cell-load) package
-introduced in the STATE repository.
+We also used the [cell-load](https://github.com/ArcInstitute/cell-load) package introduced in the STATE repository. Here's the phenotypic reversion benchmarl: [teloHAEC, phenotypic reversion](https://github.com/pfizer-opensource/phenotype_reversion).
+
+## Dataset Download
+
+We use three benchmarks. Download each dataset and place it under `datasets/`:
+
+
+| Dataset    | Description                                                              | Link                                                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `replogle` | Genome-scale Perturb-seq (Replogle et al. 2022)                          | [Figshare](https://plus.figshare.com/articles/dataset/_Mapping_information-rich_genotype-phenotype_landscapes_with_genome-scale_Perturb-seq_Replogle_et_al_2022_processed_Perturb-seq_datasets/20029387) |
+| `pbmc-1m`  | 1M PBMC cytokine perturbation (Parse)                                    | [Figshare](https://figshare.com/articles/dataset/pbmc_parse/28589774?file=53372768)                                                                                                                      |
+| `teloHAEC` | Phenotypic reversion and target prioritization for cellular inflammation | [Zenodo](https://zenodo.org/records/18792213)                                                                                                                                                            |
+
+
