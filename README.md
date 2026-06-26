@@ -2,18 +2,16 @@
 
 Sanjukta Bhattacharya, Christian Gensbigler, Shaamil Karim, Jon Lees
 
-[Paper](#citation)
-[bioRxiv](https://www.biorxiv.org/content/10.64898/2026.06.15.732063v1.abstract)
-[PDF](#citation)
-[PyTorch](https://pytorch.org/get-started/locally/)
-[Python](https://www.python.org)
-[License](LICENSE)
+[![bioRxiv](https://img.shields.io/badge/bioRxiv-2026.06.15.732063-b31b1b)](https://www.biorxiv.org/content/10.64898/2026.06.15.732063v1.abstract)
+[![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/get-started/locally/)
+[![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)](https://www.python.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 **[Installation](#installation)** | **[Dataset Download](#dataset-download)** | **[Training](#training)** | **[Evaluation](#evaluation)** | **[Citation](#citation)**
 
 ---
 
-`ExpressionVAE` is a vector-quantized (FSQ) variational autoencoder that encodes
+`ExpressionVAE` is a scalar-quantized (FSQ) variational autoencoder that encodes
 each cell's gene-expression profile as a fixed-length sequence of discrete codes, paired with a perturbation-conditioned generative prior over those codes (autoregressive, masked discrete diffusion, or flow matching). On both Replogle and Parse 1M datasets it reaches state-of-the-art on the distributional and mean based perturbation metrics. The frozen encoder transfers to an un-seen CRISPRi reversion benchmark introduced in the TeloHAEC dataset.
 
 This repository contains everything needed to reproduce the paper's two datasets (Replogle, Parse 1M), the TeloHAEC evaluation, and the reported metrics.
