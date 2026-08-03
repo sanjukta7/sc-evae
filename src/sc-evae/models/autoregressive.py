@@ -118,6 +118,18 @@ class AutoregressiveModel(nn.Module):
             head_config, d_model, num_genes=config.num_genes
         )
 
+    def train(self, mode: bool = True):
+        """Keep the frozen VAE in eval mode even when this model is set to train().
+
+        nn.Module.train() recurses into all submodules, so without this override
+        the frozen self.vae (a submodule) would be flipped back to training mode
+        every epoch, re-enabling its dropout/batchnorm-in-train-mode behavior.
+        """
+        super().train(mode)
+        if self.vae is not None:
+            self.vae.eval()
+        return self
+
     # --------------------------------------------------------------------------
     # Internal helpers
     # --------------------------------------------------------------------------
